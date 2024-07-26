@@ -109,11 +109,11 @@ const EditableTable = ({ setIdBroadcast }) => {
       });
     }
     const formattedData = {
-      entries: dataSource.map((item) => ({
-        nama: item.nama,
-        nomor: item.nomor,
+      recipients: dataSource.map((item) => ({
+        name: item.nama,
+        number: item.nomor,
       })),
-      message: message,
+      messageText: message,
     };
 
     console.log(formattedData); // Periksa data yang diformat sebelum mengirim
@@ -123,7 +123,7 @@ const EditableTable = ({ setIdBroadcast }) => {
         "https://wa.frhan.site/broadcast",
         formattedData
       );
-      const { idBroadcast } = response.data;
+      const { idBroadcast } = response.data.idBroadcast;
       setIdBroadcast(idBroadcast);
       notification.success({
         message: "Data Posted",
