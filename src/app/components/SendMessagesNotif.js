@@ -14,7 +14,7 @@ const StatusChecker = ({ idBroadcast, onCompleted }) => {
   );
 
   useEffect(() => {
-    if (data && data.status === "completed") {
+    if (data && data.broadcastStatus.status === "completed") {
       onCompleted();
     }
   }, [data, onCompleted]);
