@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Table, Input, Button, Space, Form, Upload, notification } from "antd";
+import {
+  Table,
+  Input,
+  Button,
+  Space,
+  Form,
+  Upload,
+  notification,
+  DatePicker,
+  ConfigProvider,
+} from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -8,14 +18,28 @@ import {
 } from "@ant-design/icons";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import Instance from "../plugins/axiosInterceptors";
+import TextArea from "antd/es/input/TextArea";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+import locale from "antd/es/date-picker/locale/id_ID";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
+// Set locale to Indonesian
+dayjs.locale("id");
 const EditableTable = ({ setIdBroadcast }) => {
   const [dataSource, setDataSource] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [count, setCount] = useState(0);
-  const [message, setMessage] = useState("");
+  const [displayedMessage, setDisplayedMessage] = useState("");
+  const [formattedMessage, setFormattedMessage] = useState("");
   const [searchText, setSearchText] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
+  const [selectedDate, setSelectedDate] = useState(null);
+
   const handleFileUpload = ({ file }) => {
     const reader = new FileReader();
 
@@ -41,16 +65,26 @@ const EditableTable = ({ setIdBroadcast }) => {
 
     reader.readAsArrayBuffer(file.originFileObj);
   };
-  // const handleAdd = () => {
-  //   const newData = {
-  //     key: count,
-  //     nama: "",
-  //     nomor: "",
-  //   };
-  //   setDataSource([...dataSource, newData]);
-  //   setFilteredData([...dataSource, newData]);
-  //   setCount(count + 1);
-  // };
+
+  const handleDateChange = (date) => {
+    if (date) {
+      const formattedDate = dayjs(date)
+        .tz("Asia/Jakarta")
+        .format("YYYY-MM-DD HH:mm:ss");
+      setSelectedDate(formattedDate);
+      console.log("Selected Date:", formattedDate);
+    } else {
+      setSelectedDate(null);
+    }
+  };
+  const handleChange = (e) => {
+    const originalMessage = e.target.value;
+    const formattedMessage = originalMessage.replace(/\r?\n/g, "\n");
+
+    setDisplayedMessage(originalMessage);
+    setFormattedMessage(formattedMessage);
+  };
+
   const handleAdd = () => {
     const newData = {
       key: count,
@@ -102,7 +136,7 @@ const EditableTable = ({ setIdBroadcast }) => {
         description: "Jumlah data 0!",
       });
     }
-    if (!message) {
+    if (!formattedMessage) {
       return notification.error({
         message: "Message kosong!",
         description: "Pesan kosong harap isi pesan",
@@ -113,16 +147,12 @@ const EditableTable = ({ setIdBroadcast }) => {
         name: item.nama,
         number: item.nomor,
       })),
-      messageText: message,
+      messageText: formattedMessage,
     };
 
     console.log(formattedData); // Periksa data yang diformat sebelum mengirim
-
     try {
-      const response = await axios.post(
-        "https://wa.frhan.site/broadcast",
-        formattedData
-      );
+      const response = await Instance.post(`/broadcast`, formattedData);
       const { idBroadcast } = response.data.idBroadcast;
       setIdBroadcast(idBroadcast);
       notification.success({
@@ -197,7 +227,7 @@ const EditableTable = ({ setIdBroadcast }) => {
       ),
     },
     {
-      title: "Aksi",
+      title: "Action",
       dataIndex: "aksi",
       render: (_, record) =>
         dataSource.length >= 1 ? (
@@ -218,12 +248,6 @@ const EditableTable = ({ setIdBroadcast }) => {
   return (
     <div className="w-4/5 sm:w-2/3 lg:w-3/5 bg-white rounded-lg shadow-lg p-5">
       <div className="flex flex-col space-y-4 p-4">
-        {/* <input
-        type="file"
-        accept=".xlsx, .xls"
-        onChange={handleFileUpload}
-        className="mb-4"
-      /> */}
         <Upload
           accept=".xlsx, .xls"
           onChange={handleFileUpload}
@@ -271,12 +295,21 @@ const EditableTable = ({ setIdBroadcast }) => {
             <Table.Summary.Row>
               <Table.Summary.Cell index={0} colSpan={2}>
                 <Form layout="vertical">
-                  <Form.Item label="Message">
-                    <Input
+                  <Form.Item label="Message" required>
+                    <TextArea
                       placeholder="Pesan"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
+                      value={displayedMessage}
+                      onChange={handleChange}
                     />
+                  </Form.Item>
+                  <Form.Item label="Waktu pengiriman pesan" required>
+                    <ConfigProvider locale={locale}>
+                      <DatePicker
+                        showTime={{ format: "HH:mm" }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        onChange={handleDateChange}
+                      />
+                    </ConfigProvider>
                   </Form.Item>
                 </Form>
               </Table.Summary.Cell>

@@ -29,11 +29,11 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between bg-blue-950">
       <Head>
-        <title>Broacast Whatsapp</title>
+        <title>Broadcast Whatsapp</title>
         <meta name="description" content="Import, edit, and post Excel data" />
       </Head>
       <h1 className="text-4xl font-bold text-white mt-8 mb-4 ">
-        Broacast Whatsapp
+        Broadcast Whatsapp
       </h1>
 
       <div className="flex flex-col sm:flex-row w-full justify-center space-y-4 sm:space-y-0 sm:space-x-4 p-5">

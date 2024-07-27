@@ -7,7 +7,7 @@ const fetcher = (url) => axios.get(url).then((res) => res.data);
 const StatusChecker = ({ idBroadcast, onCompleted }) => {
   const { data, error } = useSWR(
     idBroadcast
-      ? `https://wa.frhan.site/broadcast-status/status/${idBroadcast}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/broadcast-status/status/${idBroadcast}`
       : null,
     fetcher,
     { refreshInterval: 5000 }

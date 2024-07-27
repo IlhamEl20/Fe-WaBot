@@ -10,7 +10,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" translate="no">
+      <meta name="google" content="notranslate" />
       <body className={inter.className}>{children}</body>
     </html>
   );

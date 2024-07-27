@@ -3,6 +3,7 @@ import styles from "../page.module.css";
 import { io } from "socket.io-client";
 import { useState } from "react";
 import ChatPage from "../components/chat/page";
+import { notification } from "antd";
 
 export default function Home() {
   const [showChat, setShowChat] = useState(false);
@@ -24,7 +25,10 @@ export default function Home() {
         setShowSpinner(false);
       }, 4000);
     } else {
-      alert("Please fill in Username and Room Id");
+      notification.error({
+        message: "Masuka username dan id rooam",
+        description: "masih kosong",
+      });
     }
   };
 
@@ -35,20 +39,29 @@ export default function Home() {
         style={{ display: showChat ? "none" : "" }}
       >
         <input
-          className={styles.main_input}
+          className={`border rounded px-4 py-2 text-gray-700 focus:outline-none focus:border-blue-500 ${
+            showSpinner ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           type="text"
           placeholder="Username"
           onChange={(e) => setUserName(e.target.value)}
           disabled={showSpinner}
         />
         <input
-          className={styles.main_input}
+          className={`border rounded px-4 py-2 text-gray-700 focus:outline-none focus:border-blue-500 ${
+            showSpinner ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           type="text"
           placeholder="room id"
           onChange={(e) => setRoomId(e.target.value)}
           disabled={showSpinner}
         />
-        <button className={styles.main_button} onClick={handleJoin}>
+        <button
+          className={`bg-blue-500 w-64 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+            showSpinner ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          onClick={handleJoin}
+        >
           {!showSpinner ? (
             "Join"
           ) : (
