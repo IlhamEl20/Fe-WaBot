@@ -154,6 +154,7 @@ const EditableTable = ({ setIdBroadcast }) => {
     try {
       const response = await Instance.post(`/broadcast`, formattedData);
       const { idBroadcast } = response.data.idBroadcast;
+        console.log(response)
       setIdBroadcast(idBroadcast);
       notification.success({
         message: "Data Posted",
