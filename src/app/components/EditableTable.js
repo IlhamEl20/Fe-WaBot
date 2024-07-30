@@ -60,7 +60,6 @@ const EditableTable = ({ setIdBroadcast }) => {
       setDataSource(importedData);
       setFilteredData(importedData);
       setCount(importedData.length);
-      setMessage(worksheet[1][2] || "");
     };
 
     reader.readAsArrayBuffer(file.originFileObj);
@@ -126,7 +125,6 @@ const EditableTable = ({ setIdBroadcast }) => {
     setDataSource([]);
     setFilteredData([]);
     setCount(0);
-    setMessage("");
   };
 
   const handlePost = async () => {
@@ -153,17 +151,23 @@ const EditableTable = ({ setIdBroadcast }) => {
     console.log(formattedData); // Periksa data yang diformat sebelum mengirim
     try {
       const response = await Instance.post(`/broadcast`, formattedData);
-      const { idBroadcast } = response.data.idBroadcast;
-      setIdBroadcast(idBroadcast);
+
+      setIdBroadcast(response.data.idBroadcast);
       notification.success({
         message: "Data Posted",
-        description: `Data has been successfully posted with ID ${idBroadcast}`,
+        description: `Data has been successfully posted with ID ${response.data.idBroadcast}`,
+        duration: 0,
+        placement: "bottomRight",
       });
+      handleDeleteAll();
+      setDisplayedMessage("");
+      setFormattedMessage("");
     } catch (error) {
       console.log("There was an error posting the data:", error);
       notification.error({
         message: "Posting Error",
         description: "There was an error posting the data.",
+        placement: "bottomRight",
       });
     }
   };

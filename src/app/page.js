@@ -24,7 +24,7 @@ export default function Home() {
   const [idBroadcast, setIdBroadcast] = useState(null);
 
   const handleBroadcastCompleted = () => {
-    setIdBroadcast(null);
+    // setIdBroadcast(null);
   };
   return (
     <main className="flex min-h-screen flex-col items-center justify-between bg-blue-950">
