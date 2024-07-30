@@ -151,7 +151,6 @@ const EditableTable = ({ setIdBroadcast }) => {
     console.log(formattedData); // Periksa data yang diformat sebelum mengirim
     try {
       const response = await Instance.post(`/broadcast`, formattedData);
-
       setIdBroadcast(response.data.idBroadcast);
       notification.success({
         message: "Data Posted",
